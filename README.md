@@ -9,7 +9,7 @@ This library is forked from the [Google Maps JavaScript API utility libraries on
 
 ## Live Demos
 
-[Examples page](https://googlemaps.github.io/js-marker-clusterer-plus/docs/examples.html)
+[Examples page](https://jasonwzs.github.io/js-marker-clusterer-plus/docs/examples.html)
 
 ## License
 
