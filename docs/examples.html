@@ -1,8 +1,9 @@
+<!-- Modified by Jason Wen (zhenshan.wen@gmail.com) -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>MarkerCluster for v3 Documentation: Examples</title>
+    <title>MarkerCluster Documentation: Examples</title>
     <link rel="stylesheet" type="text/css" href="http://code.google.com/css/codesite.css"></link>
     <link rel="stylesheet" type="text/css" href="../../util/docs/template/local_extensions.css"></link>
     <script type="text/javascript" src="http://code.google.com/js/prettify.js"></script>
@@ -22,14 +23,14 @@ Note: Be sure to include <tt>markerclusterer.js</tt> or <tt>markerclusterer_pack
     <p>To use a marker clusterer, create a <code>MarkerClusterer</code> object.
         In the simplest case, just pass a map to it.</p>
 <pre class="prettyprint">
-var center = new google.maps.LatLng(37.4419, -122.1419);
+var center = new qq.maps.LatLng(37.4419, -122.1419);
 var options = {
   'zoom': 13,
   'center': center,
-  'mapTypeId': google.maps.MapTypeId.ROADMAP
+  'mapTypeId': qq.maps.MapTypeId.ROADMAP
 };
 
-var map = new google.maps.Map(document.getElementById("map"), options);
+var map = new qq.maps.Map(document.getElementById("map"), options);
 var mc = new MarkerClusterer(map);
 </pre>
 
@@ -38,14 +39,14 @@ var mc = new MarkerClusterer(map);
      </p>
 
 <pre class="prettyprint">
-var center = new google.maps.LatLng(37.4419, -122.1419);
+var center = new qq.maps.LatLng(37.4419, -122.1419);
 var options = {
   'zoom': 13,
   'center': center,
-  'mapTypeId': google.maps.MapTypeId.ROADMAP
+  'mapTypeId': qq.maps.MapTypeId.ROADMAP
 };
 
-var map = new google.maps.Map(document.getElementById("map"), options);
+var map = new qq.maps.Map(document.getElementById("map"), options);
 
 var mcOptions = {gridSize: 50, maxZoom: 15};
 var mc = new MarkerClusterer(map, [], mcOptions);
@@ -56,14 +57,14 @@ var mc = new MarkerClusterer(map, [], mcOptions);
       <code>addMarker()</code> or <code>addMarkers()</code>method or by
       providing an array of markers to the constructor:</p>
 <pre class="prettyprint">
-var center = new google.maps.LatLng(37.4419, -122.1419);
+var center = new qq.maps.LatLng(37.4419, -122.1419);
 var options = {
   'zoom': 13,
   'center': center,
-  'mapTypeId': google.maps.MapTypeId.ROADMAP
+  'mapTypeId': qq.maps.MapTypeId.ROADMAP
 };
 
-var map = new google.maps.Map(document.getElementById("map"), options);
+var map = new qq.maps.Map(document.getElementById("map"), options);
 
 var mcOptions = {gridSize: 50, maxZoom: 15};
 var markers = [...]; // Create the markers you want to add and collect them into an array.
@@ -75,20 +76,20 @@ var mc = new MarkerClusterer(map, markers, mcOptions);
     <p>This example will show 100 markers on a map.</p>
 
 <pre class="prettyprint">
-var center = new google.maps.LatLng(37.4419, -122.1419);
+var center = new qq.maps.LatLng(37.4419, -122.1419);
 var options = {
   'zoom': 13,
   'center': center,
-  'mapTypeId': google.maps.MapTypeId.ROADMAP
+  'mapTypeId': qq.maps.MapTypeId.ROADMAP
 };
 
-var map = new google.maps.Map(document.getElementById("map"), options);
+var map = new qq.maps.Map(document.getElementById("map"), options);
 
 var markers = [];
 for (var i = 0; i &lt; 100; i++) {
-  var latLng = new google.maps.LatLng(data.photos[i].latitude,
+  var latLng = new qq.maps.LatLng(data.photos[i].latitude,
       data.photos[i].longitude);
-  var marker = new google.maps.Marker({'position': latLng});
+  var marker = new qq.maps.Marker({'position': latLng});
   markers.push(marker);
 }
 var markerCluster = new MarkerClusterer(map, markers);

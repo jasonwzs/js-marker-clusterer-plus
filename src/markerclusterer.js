@@ -1,6 +1,10 @@
 /**
+ * Modified by Jason Wen (zhenshan.wen@gmail.com)
+ */
+
+/**
  * @name MarkerClustererPlus for Google Maps V3
- * @version 2.1.2 [May 28, 2014]
+ * @version 2.1.1 [November 4, 2013]
  * @author Gary Little
  * @fileoverview
  * The library creates and manages per-zoom-level clusters for large amounts of markers.
@@ -88,14 +92,14 @@
  * A cluster icon.
  *
  * @constructor
- * @extends google.maps.OverlayView
+ * @extends qq.maps.Overlay
  * @param {Cluster} cluster The cluster with which the icon is to be associated.
  * @param {Array} [styles] An array of {@link ClusterIconStyle} defining the cluster icons
  *  to use for various cluster sizes.
  * @private
  */
 function ClusterIcon(cluster, styles) {
-  cluster.getMarkerClusterer().extend(ClusterIcon, google.maps.OverlayView);
+  cluster.getMarkerClusterer().extend(ClusterIcon, qq.maps.Overlay);
 
   this.cluster_ = cluster;
   this.className_ = cluster.getMarkerClusterer().getClusterClass();
@@ -126,16 +130,16 @@ ClusterIcon.prototype.onAdd = function () {
   this.getPanes().overlayMouseTarget.appendChild(this.div_);
 
   // Fix for Issue 157
-  this.boundsChangedListener_ = google.maps.event.addListener(this.getMap(), "bounds_changed", function () {
+  this.boundsChangedListener_ = qq.maps.event.addListener(this.getMap(), "bounds_changed", function () {
     cDraggingMapByCluster = cMouseDownInCluster;
   });
 
-  google.maps.event.addDomListener(this.div_, "mousedown", function () {
+  qq.maps.event.addDomListener(this.div_, "mousedown", function () {
     cMouseDownInCluster = true;
     cDraggingMapByCluster = false;
   });
 
-  google.maps.event.addDomListener(this.div_, "click", function (e) {
+  qq.maps.event.addDomListener(this.div_, "click", function (e) {
     cMouseDownInCluster = false;
     if (!cDraggingMapByCluster) {
       var theBounds;
@@ -147,8 +151,8 @@ ClusterIcon.prototype.onAdd = function () {
        * @param {Cluster} c The cluster that was clicked.
        * @event
        */
-      google.maps.event.trigger(mc, "click", cClusterIcon.cluster_);
-      google.maps.event.trigger(mc, "clusterclick", cClusterIcon.cluster_); // deprecated name
+      qq.maps.event.trigger(mc, "click", cClusterIcon.cluster_);
+      qq.maps.event.trigger(mc, "clusterclick", cClusterIcon.cluster_); // deprecated name
 
       // The default click handler follows. Disable it by setting
       // the zoomOnClick property to false.
@@ -175,7 +179,7 @@ ClusterIcon.prototype.onAdd = function () {
     }
   });
 
-  google.maps.event.addDomListener(this.div_, "mouseover", function () {
+  qq.maps.event.addDomListener(this.div_, "mouseover", function () {
     var mc = cClusterIcon.cluster_.getMarkerClusterer();
     /**
      * This event is fired when the mouse moves over a cluster marker.
@@ -183,10 +187,10 @@ ClusterIcon.prototype.onAdd = function () {
      * @param {Cluster} c The cluster that the mouse moved over.
      * @event
      */
-    google.maps.event.trigger(mc, "mouseover", cClusterIcon.cluster_);
+    qq.maps.event.trigger(mc, "mouseover", cClusterIcon.cluster_);
   });
 
-  google.maps.event.addDomListener(this.div_, "mouseout", function () {
+  qq.maps.event.addDomListener(this.div_, "mouseout", function () {
     var mc = cClusterIcon.cluster_.getMarkerClusterer();
     /**
      * This event is fired when the mouse moves out of a cluster marker.
@@ -194,8 +198,16 @@ ClusterIcon.prototype.onAdd = function () {
      * @param {Cluster} c The cluster that the mouse moved out of.
      * @event
      */
-    google.maps.event.trigger(mc, "mouseout", cClusterIcon.cluster_);
+    qq.maps.event.trigger(mc, "mouseout", cClusterIcon.cluster_);
   });
+};
+
+
+/**
+ * Implement construct method defined by qq.maps.Overlay
+ */
+ClusterIcon.prototype.construct = function () {
+  this.onAdd();
 };
 
 
@@ -205,11 +217,19 @@ ClusterIcon.prototype.onAdd = function () {
 ClusterIcon.prototype.onRemove = function () {
   if (this.div_ && this.div_.parentNode) {
     this.hide();
-    google.maps.event.removeListener(this.boundsChangedListener_);
-    google.maps.event.clearInstanceListeners(this.div_);
+    qq.maps.event.removeListener(this.boundsChangedListener_);
+    qq.maps.event.clearInstanceListeners(this.div_);
     this.div_.parentNode.removeChild(this.div_);
     this.div_ = null;
   }
+};
+
+
+/**
+ * Implement destroy method defined by qq.maps.Overlay
+ */
+ClusterIcon.prototype.destroy = function () {
+  this.onRemove();
 };
 
 
@@ -244,30 +264,30 @@ ClusterIcon.prototype.show = function () {
     var img = "";
     // NOTE: values must be specified in px units
     var bp = this.backgroundPosition_.split(" ");
-    var spriteH = parseInt(bp[0].replace(/^\s+|\s+$/g, ""), 10);
-    var spriteV = parseInt(bp[1].replace(/^\s+|\s+$/g, ""), 10);
+    var spriteH = parseInt(bp[0].trim(), 10);
+    var spriteV = parseInt(bp[1].trim(), 10);
     var pos = this.getPosFromLatLng_(this.center_);
     this.div_.style.cssText = this.createCss(pos);
     img = "<img src='" + this.url_ + "' style='position: absolute; top: " + spriteV + "px; left: " + spriteH + "px; ";
     if (!this.cluster_.getMarkerClusterer().enableRetinaIcons_) {
       img += "clip: rect(" + (-1 * spriteV) + "px, " + ((-1 * spriteH) + this.width_) + "px, " +
-          ((-1 * spriteV) + this.height_) + "px, " + (-1 * spriteH) + "px);";
+        ((-1 * spriteV) + this.height_) + "px, " + (-1 * spriteH) + "px);";
     }
     img += "'>";
     this.div_.innerHTML = img + "<div style='" +
-        "position: absolute;" +
-        "top: " + this.anchorText_[0] + "px;" +
-        "left: " + this.anchorText_[1] + "px;" +
-        "color: " + this.textColor_ + ";" +
-        "font-size: " + this.textSize_ + "px;" +
-        "font-family: " + this.fontFamily_ + ";" +
-        "font-weight: " + this.fontWeight_ + ";" +
-        "font-style: " + this.fontStyle_ + ";" +
-        "text-decoration: " + this.textDecoration_ + ";" +
-        "text-align: center;" +
-        "width: " + this.width_ + "px;" +
-        "line-height:" + this.height_ + "px;" +
-        "'>" + this.sums_.text + "</div>";
+      "position: absolute;" +
+      "top: " + this.anchorText_[0] + "px;" +
+      "left: " + this.anchorText_[1] + "px;" +
+      "color: " + this.textColor_ + ";" +
+      "font-size: " + this.textSize_ + "px;" +
+      "font-family: " + this.fontFamily_ + ";" +
+      "font-weight: " + this.fontWeight_ + ";" +
+      "font-style: " + this.fontStyle_ + ";" +
+      "text-decoration: " + this.textDecoration_ + ";" +
+      "text-align: center;" +
+      "width: " + this.width_ + "px;" +
+      "line-height:" + this.height_ + "px;" +
+      "'>" + this.sums_.text + "</div>";
     if (typeof this.sums_.title === "undefined" || this.sums_.title === "") {
       this.div_.title = this.cluster_.getMarkerClusterer().getTitle();
     } else {
@@ -307,7 +327,7 @@ ClusterIcon.prototype.useStyle = function (sums) {
 /**
  * Sets the position at which to center the icon.
  *
- * @param {google.maps.LatLng} center The latlng to set as the center.
+ * @param {qq.maps.LatLng} center The latlng to set as the center.
  */
 ClusterIcon.prototype.setCenter = function (center) {
   this.center_ = center;
@@ -317,7 +337,7 @@ ClusterIcon.prototype.setCenter = function (center) {
 /**
  * Creates the cssText style parameter based on the position of the icon.
  *
- * @param {google.maps.Point} pos The position of the icon.
+ * @param {qq.maps.Point} pos The position of the icon.
  * @return {string} The CSS style text.
  */
 ClusterIcon.prototype.createCss = function (pos) {
@@ -332,8 +352,8 @@ ClusterIcon.prototype.createCss = function (pos) {
 /**
  * Returns the position at which to place the DIV depending on the latlng.
  *
- * @param {google.maps.LatLng} latlng The position in latlng.
- * @return {google.maps.Point} The position in pixels.
+ * @param {qq.maps.LatLng} latlng The position in latlng.
+ * @return {qq.maps.Point} The position in pixels.
  */
 ClusterIcon.prototype.getPosFromLatLng_ = function (latlng) {
   var pos = this.getProjection().fromLatLngToDivPixel(latlng);
@@ -394,7 +414,7 @@ Cluster.prototype.getMarkers = function () {
  * a <code>click</code>, <code>mouseover</code>, or <code>mouseout</code> event handler
  * for the <code>MarkerClusterer</code> object.
  *
- * @return {google.maps.LatLng} The center of the cluster.
+ * @return {qq.maps.LatLng} The center of the cluster.
  */
 Cluster.prototype.getCenter = function () {
   return this.center_;
@@ -404,7 +424,7 @@ Cluster.prototype.getCenter = function () {
 /**
  * Returns the map with which the cluster is associated.
  *
- * @return {google.maps.Map} The map.
+ * @return {qq.maps.Map} The map.
  * @ignore
  */
 Cluster.prototype.getMap = function () {
@@ -426,12 +446,12 @@ Cluster.prototype.getMarkerClusterer = function () {
 /**
  * Returns the bounds of the cluster.
  *
- * @return {google.maps.LatLngBounds} the cluster bounds.
+ * @return {qq.maps.LatLngBounds} the cluster bounds.
  * @ignore
  */
 Cluster.prototype.getBounds = function () {
   var i;
-  var bounds = new google.maps.LatLngBounds(this.center_, this.center_);
+  var bounds = new qq.maps.LatLngBounds(this.center_, this.center_);
   var markers = this.getMarkers();
   for (i = 0; i < markers.length; i++) {
     bounds.extend(markers[i].getPosition());
@@ -455,7 +475,7 @@ Cluster.prototype.remove = function () {
 /**
  * Adds a marker to the cluster.
  *
- * @param {google.maps.Marker} marker The marker to be added.
+ * @param {qq.maps.Marker} marker The marker to be added.
  * @return {boolean} True if the marker was added.
  * @ignore
  */
@@ -474,9 +494,9 @@ Cluster.prototype.addMarker = function (marker) {
   } else {
     if (this.averageCenter_) {
       var l = this.markers_.length + 1;
-      var lat = (this.center_.lat() * (l - 1) + marker.getPosition().lat()) / l;
-      var lng = (this.center_.lng() * (l - 1) + marker.getPosition().lng()) / l;
-      this.center_ = new google.maps.LatLng(lat, lng);
+      var lat = (this.center_.getLat() * (l - 1) + marker.getPosition().getLat()) / l;
+      var lng = (this.center_.getLng() * (l - 1) + marker.getPosition().getLng()) / l;
+      this.center_ = new qq.maps.LatLng(lat, lng);
       this.calculateBounds_();
     }
   }
@@ -513,7 +533,7 @@ Cluster.prototype.addMarker = function (marker) {
 /**
  * Determines if a marker lies within the cluster's bounds.
  *
- * @param {google.maps.Marker} marker The marker to check.
+ * @param {qq.maps.Marker} marker The marker to check.
  * @return {boolean} True if the marker lies in the bounds.
  * @ignore
  */
@@ -526,7 +546,7 @@ Cluster.prototype.isMarkerInClusterBounds = function (marker) {
  * Calculates the extended bounds of the cluster with the grid.
  */
 Cluster.prototype.calculateBounds_ = function () {
-  var bounds = new google.maps.LatLngBounds(this.center_, this.center_);
+  var bounds = new qq.maps.LatLngBounds(this.center_, this.center_);
   this.bounds_ = this.markerClusterer_.getExtendedBounds(bounds);
 };
 
@@ -560,7 +580,7 @@ Cluster.prototype.updateIcon_ = function () {
 /**
  * Determines if a marker has already been added to the cluster.
  *
- * @param {google.maps.Marker} marker The marker to check.
+ * @param {qq.maps.Marker} marker The marker to check.
  * @return {boolean} True if the marker has already been added.
  */
 Cluster.prototype.isMarkerAlreadyAdded_ = function (marker) {
@@ -655,18 +675,18 @@ Cluster.prototype.isMarkerAlreadyAdded_ = function (marker) {
 /**
  * Creates a MarkerClusterer object with the options specified in {@link MarkerClustererOptions}.
  * @constructor
- * @extends google.maps.OverlayView
- * @param {google.maps.Map} map The Google map to attach to.
- * @param {Array.<google.maps.Marker>} [opt_markers] The markers to be added to the cluster.
+ * @extends qq.maps.Overlay
+ * @param {qq.maps.Map} map The Tencent map to attach to.
+ * @param {Array.<qq.maps.Marker>} [opt_markers] The markers to be added to the cluster.
  * @param {MarkerClustererOptions} [opt_options] The optional parameters.
  */
 function MarkerClusterer(map, opt_markers, opt_options) {
-  // MarkerClusterer implements google.maps.OverlayView interface. We use the
-  // extend function to extend MarkerClusterer with google.maps.OverlayView
+  // MarkerClusterer implements qq.maps.Overlay interface. We use the
+  // extend function to extend MarkerClusterer with qq.maps.Overlay
   // because it might not always be available when the code is defined so we
   // look for it at the last possible moment. If it doesn't exist now then
   // there is no point going ahead :)
-  this.extend(MarkerClusterer, google.maps.OverlayView);
+  this.extend(MarkerClusterer, qq.maps.Overlay);
 
   opt_markers = opt_markers || [];
   opt_options = opt_options || {};
@@ -732,7 +752,7 @@ MarkerClusterer.prototype.onAdd = function () {
 
   // Add the map event listeners
   this.listeners_ = [
-    google.maps.event.addListener(this.getMap(), "zoom_changed", function () {
+    qq.maps.event.addListener(this.getMap(), "zoom_changed", function () {
       cMarkerClusterer.resetViewport_(false);
       // Workaround for this Google bug: when map is at level 0 and "-" of
       // zoom slider is clicked, a "zoom_changed" event is fired even though
@@ -740,13 +760,20 @@ MarkerClusterer.prototype.onAdd = function () {
       // event is triggered so the cluster markers that have been removed
       // do not get redrawn. Same goes for a zoom in at maxZoom.
       if (this.getZoom() === (this.get("minZoom") || 0) || this.getZoom() === this.get("maxZoom")) {
-        google.maps.event.trigger(this, "idle");
+        qq.maps.event.trigger(this, "idle");
       }
     }),
-    google.maps.event.addListener(this.getMap(), "idle", function () {
+    qq.maps.event.addListener(this.getMap(), "idle", function () {
       cMarkerClusterer.redraw_();
     })
   ];
+};
+
+/**
+ * Implement construct method defined by qq.maps.Overlay
+ */
+MarkerClusterer.prototype.construct = function () {
+  this.onAdd();
 };
 
 
@@ -774,7 +801,7 @@ MarkerClusterer.prototype.onRemove = function () {
 
   // Remove map event listeners:
   for (i = 0; i < this.listeners_.length; i++) {
-    google.maps.event.removeListener(this.listeners_[i]);
+    qq.maps.event.removeListener(this.listeners_[i]);
   }
   this.listeners_ = [];
 
@@ -782,6 +809,12 @@ MarkerClusterer.prototype.onRemove = function () {
   this.ready_ = false;
 };
 
+/**
+ * Implement destroy method defined by qq.maps.Overlay
+ */
+MarkerClusterer.prototype.destroy = function () {
+  this.onRemove();
+};
 
 /**
  * Implementation of the draw interface method.
@@ -816,7 +849,7 @@ MarkerClusterer.prototype.setupStyles_ = function () {
 MarkerClusterer.prototype.fitMapToMarkers = function () {
   var i;
   var markers = this.getMarkers();
-  var bounds = new google.maps.LatLngBounds();
+  var bounds = new qq.maps.LatLngBounds();
   for (i = 0; i < markers.length; i++) {
     bounds.extend(markers[i].getPosition());
   }
@@ -1077,7 +1110,7 @@ MarkerClusterer.prototype.getCalculator = function () {
 /**
  * Sets the value of the <code>calculator</code> property.
  *
- * @param {function(Array.<google.maps.Marker>, number)} calculator The value
+ * @param {function(Array.<qq.maps.Marker>, number)} calculator The value
  *  of the calculator property.
  */
 MarkerClusterer.prototype.setCalculator = function (calculator) {
@@ -1169,7 +1202,7 @@ MarkerClusterer.prototype.getTotalClusters = function () {
  * Adds a marker to the clusterer. The clusters are redrawn unless
  *  <code>opt_nodraw</code> is set to <code>true</code>.
  *
- * @param {google.maps.Marker} marker The marker to add.
+ * @param {qq.maps.Marker} marker The marker to add.
  * @param {boolean} [opt_nodraw] Set to <code>true</code> to prevent redrawing.
  */
 MarkerClusterer.prototype.addMarker = function (marker, opt_nodraw) {
@@ -1184,7 +1217,7 @@ MarkerClusterer.prototype.addMarker = function (marker, opt_nodraw) {
  * Adds an array of markers to the clusterer. The clusters are redrawn unless
  *  <code>opt_nodraw</code> is set to <code>true</code>.
  *
- * @param {Array.<google.maps.Marker>} markers The markers to add.
+ * @param {Array.<qq.maps.Marker>} markers The markers to add.
  * @param {boolean} [opt_nodraw] Set to <code>true</code> to prevent redrawing.
  */
 MarkerClusterer.prototype.addMarkers = function (markers, opt_nodraw) {
@@ -1193,7 +1226,7 @@ MarkerClusterer.prototype.addMarkers = function (markers, opt_nodraw) {
     if (markers.hasOwnProperty(key)) {
       this.pushMarkerTo_(markers[key]);
     }
-  }  
+  }
   if (!opt_nodraw) {
     this.redraw_();
   }
@@ -1203,13 +1236,13 @@ MarkerClusterer.prototype.addMarkers = function (markers, opt_nodraw) {
 /**
  * Pushes a marker to the clusterer.
  *
- * @param {google.maps.Marker} marker The marker to add.
+ * @param {qq.maps.Marker} marker The marker to add.
  */
 MarkerClusterer.prototype.pushMarkerTo_ = function (marker) {
   // If the marker is draggable add a listener so we can update the clusters on the dragend:
   if (marker.getDraggable()) {
     var cMarkerClusterer = this;
-    google.maps.event.addListener(marker, "dragend", function () {
+    qq.maps.event.addListener(marker, "dragend", function () {
       if (cMarkerClusterer.ready_) {
         this.isAdded = false;
         cMarkerClusterer.repaint();
@@ -1226,7 +1259,7 @@ MarkerClusterer.prototype.pushMarkerTo_ = function (marker) {
  *  <code>opt_nodraw</code> is set to <code>true</code>. Returns <code>true</code> if the
  *  marker was removed from the clusterer.
  *
- * @param {google.maps.Marker} marker The marker to remove.
+ * @param {qq.maps.Marker} marker The marker to remove.
  * @param {boolean} [opt_nodraw] Set to <code>true</code> to prevent redrawing.
  * @return {boolean} True if the marker was removed from the clusterer.
  */
@@ -1246,7 +1279,7 @@ MarkerClusterer.prototype.removeMarker = function (marker, opt_nodraw) {
  *  <code>opt_nodraw</code> is set to <code>true</code>. Returns <code>true</code> if markers
  *  were removed from the clusterer.
  *
- * @param {Array.<google.maps.Marker>} markers The markers to remove.
+ * @param {Array.<qq.maps.Marker>} markers The markers to remove.
  * @param {boolean} [opt_nodraw] Set to <code>true</code> to prevent redrawing.
  * @return {boolean} True if markers were removed from the clusterer.
  */
@@ -1270,7 +1303,7 @@ MarkerClusterer.prototype.removeMarkers = function (markers, opt_nodraw) {
 /**
  * Removes a marker and returns true if removed, false if not.
  *
- * @param {google.maps.Marker} marker The marker to remove
+ * @param {qq.maps.Marker} marker The marker to remove
  * @return {boolean} Whether the marker was removed or not
  */
 MarkerClusterer.prototype.removeMarker_ = function (marker) {
@@ -1332,18 +1365,18 @@ MarkerClusterer.prototype.repaint = function () {
 /**
  * Returns the current bounds extended by the grid size.
  *
- * @param {google.maps.LatLngBounds} bounds The bounds to extend.
- * @return {google.maps.LatLngBounds} The extended bounds.
+ * @param {qq.maps.LatLngBounds} bounds The bounds to extend.
+ * @return {qq.maps.LatLngBounds} The extended bounds.
  * @ignore
  */
 MarkerClusterer.prototype.getExtendedBounds = function (bounds) {
   var projection = this.getProjection();
 
   // Turn the bounds into latlng.
-  var tr = new google.maps.LatLng(bounds.getNorthEast().lat(),
-      bounds.getNorthEast().lng());
-  var bl = new google.maps.LatLng(bounds.getSouthWest().lat(),
-      bounds.getSouthWest().lng());
+  var tr = new qq.maps.LatLng(bounds.getNorthEast().getLat(),
+    bounds.getNorthEast().getLng());
+  var bl = new qq.maps.LatLng(bounds.getSouthWest().getLat(),
+    bounds.getSouthWest().getLng());
 
   // Convert the points to pixels and the extend out by the grid size.
   var trPix = projection.fromLatLngToDivPixel(tr);
@@ -1403,18 +1436,18 @@ MarkerClusterer.prototype.resetViewport_ = function (opt_hide) {
 /**
  * Calculates the distance between two latlng locations in km.
  *
- * @param {google.maps.LatLng} p1 The first lat lng point.
- * @param {google.maps.LatLng} p2 The second lat lng point.
+ * @param {qq.maps.LatLng} p1 The first lat lng point.
+ * @param {qq.maps.LatLng} p2 The second lat lng point.
  * @return {number} The distance between the two points in km.
  * @see http://www.movable-type.co.uk/scripts/latlong.html
-*/
+ */
 MarkerClusterer.prototype.distanceBetweenPoints_ = function (p1, p2) {
   var R = 6371; // Radius of the Earth in km
-  var dLat = (p2.lat() - p1.lat()) * Math.PI / 180;
-  var dLon = (p2.lng() - p1.lng()) * Math.PI / 180;
+  var dLat = (p2.getLat() - p1.getLat()) * Math.PI / 180;
+  var dLon = (p2.getLng() - p1.getLng()) * Math.PI / 180;
   var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(p1.lat() * Math.PI / 180) * Math.cos(p2.lat() * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos(p1.getLat() * Math.PI / 180) * Math.cos(p2.getLat() * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c;
   return d;
@@ -1424,8 +1457,8 @@ MarkerClusterer.prototype.distanceBetweenPoints_ = function (p1, p2) {
 /**
  * Determines if a marker is contained in a bounds.
  *
- * @param {google.maps.Marker} marker The marker to check.
- * @param {google.maps.LatLngBounds} bounds The bounds to check against.
+ * @param {qq.maps.Marker} marker The marker to check.
+ * @param {qq.maps.LatLngBounds} bounds The bounds to check against.
  * @return {boolean} True if the marker is in the bounds.
  */
 MarkerClusterer.prototype.isMarkerInBounds_ = function (marker, bounds) {
@@ -1436,7 +1469,7 @@ MarkerClusterer.prototype.isMarkerInBounds_ = function (marker, bounds) {
 /**
  * Adds a marker to a cluster, or creates a new cluster.
  *
- * @param {google.maps.Marker} marker The marker to add.
+ * @param {qq.maps.Marker} marker The marker to add.
  */
 MarkerClusterer.prototype.addToClosestCluster_ = function (marker) {
   var i, d, cluster, center;
@@ -1488,7 +1521,7 @@ MarkerClusterer.prototype.createClusters_ = function (iFirst) {
      * @param {MarkerClusterer} mc The MarkerClusterer whose markers are being clustered.
      * @event
      */
-    google.maps.event.trigger(this, "clusteringbegin", this);
+    qq.maps.event.trigger(this, "clusteringbegin", this);
 
     if (typeof this.timerRefStatic !== "undefined") {
       clearTimeout(this.timerRefStatic);
@@ -1501,10 +1534,10 @@ MarkerClusterer.prototype.createClusters_ = function (iFirst) {
   //
   // See Comments 9 & 11 on Issue 3651 relating to this workaround for a Google Maps bug:
   if (this.getMap().getZoom() > 3) {
-    mapBounds = new google.maps.LatLngBounds(this.getMap().getBounds().getSouthWest(),
+    mapBounds = new qq.maps.LatLngBounds(this.getMap().getBounds().getSouthWest(),
       this.getMap().getBounds().getNorthEast());
   } else {
-    mapBounds = new google.maps.LatLngBounds(new google.maps.LatLng(85.02070771743472, -178.48388434375), new google.maps.LatLng(-85.08136444384544, 178.00048865625));
+    mapBounds = new qq.maps.LatLngBounds(new qq.maps.LatLng(85.02070771743472, -178.48388434375), new qq.maps.LatLng(-85.08136444384544, 178.00048865625));
   }
   var bounds = this.getExtendedBounds(mapBounds);
 
@@ -1533,7 +1566,7 @@ MarkerClusterer.prototype.createClusters_ = function (iFirst) {
      * @param {MarkerClusterer} mc The MarkerClusterer whose markers are being clustered.
      * @event
      */
-    google.maps.event.trigger(this, "clusteringend", this);
+    qq.maps.event.trigger(this, "clusteringend", this);
   }
 };
 
@@ -1561,7 +1594,7 @@ MarkerClusterer.prototype.extend = function (obj1, obj2) {
  * The default function for determining the label text and style
  * for a cluster icon.
  *
- * @param {Array.<google.maps.Marker>} markers The array of markers represented by the cluster.
+ * @param {Array.<qq.maps.Marker>} markers The array of markers represented by the cluster.
  * @param {number} numStyles The number of marker styles available.
  * @return {ClusterIconInfo} The information resource for the cluster.
  * @constant
@@ -1630,3 +1663,14 @@ MarkerClusterer.IMAGE_EXTENSION = "png";
  * @constant
  */
 MarkerClusterer.IMAGE_SIZES = [53, 56, 66, 78, 90];
+
+if (typeof String.prototype.trim !== 'function') {
+  /**
+   * IE hack since trim() doesn't exist in all browsers
+   * @return {string} The string with removed whitespace
+   */
+  String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/g, '');
+  }
+}
+

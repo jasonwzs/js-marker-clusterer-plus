@@ -1,8 +1,9 @@
+<!-- Modified by Jason Wen (zhenshan.wen@gmail.com) -->
 <!DOCTYPE>
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>MarkerClustererPlus V3 Example</title>
+    <title>MarkerClustererPlus Example</title>
 
     <style type="text/css">
       body {
@@ -80,30 +81,19 @@
 
     </style>
 
-    <script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>
+    <script src="http://map.qq.com/api/js?v=2.exp"></script>
     <script src="../src/data.json" type="text/javascript"></script>
-    <script type="text/javascript">
-      var script = '<script type="text/javascript" src="../src/markerclusterer';
-      if (document.location.search.indexOf('packed') !== -1) {
-        script += '_packed';
-      }
-      script += '.js"><' + '/script>';
-      document.write(script);
-    </script>
+    <script type="text/javascript" src="../src/markerclusterer.js"></script>
 
     <script type="text/javascript" src="speed_test.js"></script>
 
     <script type="text/javascript">      
-      google.maps.event.addDomListener(window, 'load', speedTest.init);
+      qq.maps.event.addDomListener(window, 'load', speedTest.init);
     </script>
   </head>
   <body>
     <div id="panel">
       <h3>An example of MarkerClustererPlus</h3>
-      <p>
-        <a href="?packed">Packed</a> |
-        <a href="?">Standard</a> version of the script.
-      </p>
 
       <div>
         <input type="checkbox" checked="checked" id="usegmm"/>

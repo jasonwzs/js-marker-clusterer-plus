@@ -1,17 +1,20 @@
+<!-- Modified by Jason Wen (zhenshan.wen@gmail.com) -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>MarkerClustererPlus for Google Maps V3 v2.1.2 [May 28, 2014] Reference</title>
+    <title>MarkerClustererPlus for Tencent Maps Reference</title>
     <link rel="stylesheet" type="text/css" href="http://code.google.com/css/codesite.css"></link>
     <link rel="stylesheet" type="text/css" href="../../util/docs/template/local_extensions.css"></link>
   </head>
   <body>
-    <h1>MarkerClustererPlus for Google Maps V3</h1>
+    <h1>MarkerClustererPlus for Tencent Maps V2</h1>
     <p>
 The library creates and manages per-zoom-level clusters for large amounts of markers.
 <p>
-This is an enhanced V3 implementation of the
+This is an modified implementation for Tencent Maps javascript API V2.
+<p>
+The original library is an enhanced V3 implementation of the
 <a href="http://gmaps-utility-library-dev.googlecode.com/svn/tags/markerclusterer/"
 >V2 MarkerClusterer</a> by Xiaoxi Wu. It is based on the
 <a href="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/"
@@ -68,7 +71,7 @@ v2.0 release: MarkerClustererPlus v2.0 is backward compatible with MarkerCluster
                 <td><code>getCenter()</code></td>
                 
                   
-                    <td><code>google.maps.LatLng</code></td>
+                    <td><code>qq.maps.LatLng</code></td>
                   
                 
                 <td>Returns the center of the cluster. You can call this from
@@ -320,7 +323,7 @@ for the <code>MarkerClusterer</code> object.</td>
       
     
       <h2><a name="MarkerClusterer"></a>class MarkerClusterer</h2>
-      <p>  This class extends <code>google.maps.OverlayView</code>.</p>
+      <p>  This class extends <code>qq.maps.Overlay</code>.</p>
       
         <h3>Constructor</h3>
         <table summary="class MarkerClusterer - Constructor" width="90%">
@@ -333,7 +336,7 @@ for the <code>MarkerClusterer</code> object.</td>
             </tr>
             
               <tr class="odd">
-                <td><code>MarkerClusterer(<span class="type">map:google.maps.Map</span>, <span class="type">opt_markers?:Array.&lt;google.maps.Marker&gt;</span>, <span class="type">opt_options?:MarkerClustererOptions</span>)</code></td>
+                <td><code>MarkerClusterer(<span class="type">map:qq.maps.Map</span>, <span class="type">opt_markers?:Array.&lt;qq.maps.Marker&gt;</span>, <span class="type">opt_options?:MarkerClustererOptions</span>)</code></td>
                 
                 <td>Creates a MarkerClusterer object with the options specified in <code><a href="reference.html#MarkerClustererOptions">MarkerClustererOptions</a></code>.</td>
               </tr>
@@ -356,7 +359,7 @@ for the <code>MarkerClusterer</code> object.</td>
             </tr>
             
               <tr class="odd">
-                <td><code>addMarker(<span class="type">marker:google.maps.Marker</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
+                <td><code>addMarker(<span class="type">marker:qq.maps.Marker</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
                 
                   
                     <td><code>None</code></td>
@@ -367,7 +370,7 @@ for the <code>MarkerClusterer</code> object.</td>
               </tr>
             
               <tr class="even">
-                <td><code>addMarkers(<span class="type">markers:Array.&lt;google.maps.Marker&gt;</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
+                <td><code>addMarkers(<span class="type">markers:Array.&lt;qq.maps.Marker&gt;</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
                 
                   
                     <td><code>None</code></td>
@@ -589,7 +592,7 @@ for the <code>MarkerClusterer</code> object.</td>
               </tr>
             
               <tr class="even">
-                <td><code>removeMarker(<span class="type">marker:google.maps.Marker</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
+                <td><code>removeMarker(<span class="type">marker:qq.maps.Marker</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
                 
                   
                     <td><code>boolean</code></td>
@@ -601,7 +604,7 @@ for the <code>MarkerClusterer</code> object.</td>
               </tr>
             
               <tr class="odd">
-                <td><code>removeMarkers(<span class="type">markers:Array.&lt;google.maps.Marker&gt;</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
+                <td><code>removeMarkers(<span class="type">markers:Array.&lt;qq.maps.Marker&gt;</span>, <span class="type">opt_nodraw?:boolean</span>)</code></td>
                 
                   
                     <td><code>boolean</code></td>
@@ -644,7 +647,7 @@ for the <code>MarkerClusterer</code> object.</td>
               </tr>
             
               <tr class="odd">
-                <td><code>setCalculator(<span class="type">calculator:function(Array.&lt;google.maps.Marker&gt;|number)</span>)</code></td>
+                <td><code>setCalculator(<span class="type">calculator:function(Array.&lt;qq.maps.Marker&gt;|number)</span>)</code></td>
                 
                   
                     <td><code>None</code></td>

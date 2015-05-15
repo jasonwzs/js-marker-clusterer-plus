@@ -1,4 +1,8 @@
 /**
+ * Modified by Jason Wen (zhenshan.wen@gmail.com)
+ */
+
+/**
  * @fileoverview This demo is used for MarkerClusterer. It will show 100 markers
  * using MarkerClusterer and count the time to show the difference between using
  * MarkerClusterer and without MarkerClusterer.
@@ -18,23 +22,23 @@ speedTest.markers = [];
 speedTest.infoWindow = null;
 
 speedTest.init = function() {
-  var latlng = new google.maps.LatLng(39.91, 116.38);
+  var latlng = new qq.maps.LatLng(39.91, 116.38);
   var options = {
     'zoom': 2,
     'center': latlng,
-    'mapTypeId': google.maps.MapTypeId.ROADMAP
+    'mapTypeId': qq.maps.MapTypeId.ROADMAP
   };
 
-  speedTest.map = new google.maps.Map($('map'), options);
+  speedTest.map = new qq.maps.Map($('map'), options);
   speedTest.pics = data.photos;
   
   var useGmm = document.getElementById('usegmm');
-  google.maps.event.addDomListener(useGmm, 'click', speedTest.change);
+  qq.maps.event.addDomListener(useGmm, 'click', speedTest.change);
   
   var numMarkers = document.getElementById('nummarkers');
-  google.maps.event.addDomListener(numMarkers, 'change', speedTest.change);
+  qq.maps.event.addDomListener(numMarkers, 'change', speedTest.change);
 
-  speedTest.infoWindow = new google.maps.InfoWindow();
+  speedTest.infoWindow = new qq.maps.InfoWindow();
 
   speedTest.showMarkers();
 };
@@ -71,22 +75,22 @@ speedTest.showMarkers = function() {
     panel.appendChild(item);
 
 
-    var latLng = new google.maps.LatLng(speedTest.pics[i].latitude,
+    var latLng = new qq.maps.LatLng(speedTest.pics[i].latitude,
         speedTest.pics[i].longitude);
 
     var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=' +
         'FFFFFF,008CFF,000000&ext=.png';
-    var markerImage = new google.maps.MarkerImage(imageUrl,
-        new google.maps.Size(24, 32));
+    var markerImage = new qq.maps.MarkerImage(imageUrl,
+        new qq.maps.Size(24, 32));
 
-    var marker = new google.maps.Marker({
+    var marker = new qq.maps.Marker({
       'position': latLng,
       'icon': markerImage
     });
 
     var fn = speedTest.markerClickFunction(speedTest.pics[i], latLng);
-    google.maps.event.addListener(marker, 'click', fn);
-    google.maps.event.addDomListener(title, 'click', fn);
+    qq.maps.event.addListener(marker, 'click', fn);
+    qq.maps.event.addDomListener(title, 'click', fn);
     speedTest.markers.push(marker);
   }
 
